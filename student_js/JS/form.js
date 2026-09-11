@@ -71,7 +71,7 @@ async function createStudent(studentData) {
     return data;
   } catch (error) {
     console.error("Error:", error.message);
-    studentForm.reset();
+    //studentForm.reset();
     alert(error.message);
   }
 }
@@ -85,15 +85,13 @@ async function deleteStudent(studentId) {
       method: "DELETE",
     });
 
-    // 응답 본문을  읽어오기
-    const data = await response.json();
-
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
       const defaultMsg =
         response.status === 404
           ? "존재하지 않는 학생입니다."
           : "학생 삭제에 실패했습니다.";
-      throw new Error(data.message || defaultMsg);
+      throw new Error(errorData.message || defaultMsg);
     }
 
     alert("학생이 성공적으로 삭제되었습니다.");
