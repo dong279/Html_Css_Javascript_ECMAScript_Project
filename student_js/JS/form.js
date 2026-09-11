@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // 폼 제출 이벤트 핸들러
 studentForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  // document.getElementById("name").value는 HTMLElement 객체
+  // document.getElementById("name")는 HTMLElement 객체
   //const name = document.getElementById("name").value;
   const formData = new FormData(studentForm);
 
@@ -34,6 +34,7 @@ studentForm.addEventListener("submit", function (e) {
       dateOfBirth: formData.get("dateOfBirth") || null,
     },
   };
+
   // 유효성 검사
   if (!validateStudent(studentData)) {
     return;
@@ -71,6 +72,36 @@ async function createStudent(studentData) {
   } catch (error) {
     console.error("Error:", error.message);
     studentForm.reset();
+    alert(error.message);
+  }
+}
+
+// 학생 삭제 함수
+async function deleteStudent(studentId) {
+  if (!confirm("정말로 이 학생을 삭제하시겠습니까?")) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/students/${studentId}`, {
+      method: "DELETE",
+    });
+
+    // 응답 본문을  읽어오기
+    const data = await response.json();
+
+    if (!response.ok) {
+      const defaultMsg =
+        response.status === 404
+          ? "존재하지 않는 학생입니다."
+          : "학생 삭제에 실패했습니다.";
+      throw new Error(data.message || defaultMsg);
+    }
+
+    alert("학생이 성공적으로 삭제되었습니다.");
+    //showSuccess('학생이 성공적으로 삭제되었습니다.');
+    loadStudents(); // 목록 새로고침
+  } catch (error) {
+    console.error("Error:", error);
+    //showError(error.message);
     alert(error.message);
   }
 }
@@ -126,8 +157,8 @@ function loadStudents_then() {
       return response.json();
     })
     .then((students) => {
-      console.log(students);
-      //renderStudentTable(students);
+      //console.log(students);
+      renderStudentTable(students);
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -214,7 +245,7 @@ function isValidEmail(email) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailPattern.test(email);
 }
-//학번 유효성 검사
+//학번 유효성 검사 CS001, cs001
 function isValidStudentNumber(studentNumber) {
   const studentNumberRegex = /^[A-Z]{2}\d{3}$/i;
   // 공백이 포함되어 들어올 수 있으므로 trim()을 사용해 양끝 공백 제거 후 검사
