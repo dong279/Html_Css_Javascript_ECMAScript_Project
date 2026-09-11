@@ -122,6 +122,7 @@ async function editStudent(studentId) {
     editingStudentId = studentId;
     submitButton.textContent = "학생 수정";
     studentForm.scrollIntoView({ behavior: "smooth" });
+    cancelButton.style.display = "block";
   } catch (error) {
     console.error("Error:", error.message);
     showError(error.message);
