@@ -13,10 +13,52 @@ const MESSAGE_TIMEOUT = 3000;
 // 자동 초기화 예약. 새 메시지가 오면 이전 예약을 취소한다.
 let messageTimer = null;
 
+// 에러 메시지 표시
+function showError(message) {
+  clearTimeout(messageTimer); // 앞선 자동 초기화 예약을 취소한다
+  formError.textContent = message;
+  formError.style.display = "block";
+  formError.style.color = "#dc3545";
+}
+
+// 성공 메시지 표시 - MESSAGE_TIMEOUT 뒤에 저절로 사라진다
+function showSuccess(message) {
+  clearTimeout(messageTimer);
+  formError.textContent = message;
+  formError.style.display = "block";
+  formError.style.color = "#28a745";
+  messageTimer = setTimeout(clearMessages, MESSAGE_TIMEOUT);
+}
+
+// 메시지 초기화
+function clearMessages() {
+  clearTimeout(messageTimer); // 예약이 남아 있으면 함께 취소한다
+  messageTimer = null;
+  formError.textContent = "";
+  formError.style.display = "none";
+}
+
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
   loadStudents();
 });
+
+// 에러 메시지 표시
+function showError(message) {
+  clearTimeout(messageTimer); // 앞선 자동 초기화 예약을 취소한다
+  formError.textContent = message;
+  formError.style.display = "block";
+  formError.style.color = "#dc3545";
+}
+
+// 성공 메시지 표시 - MESSAGE_TIMEOUT 뒤에 저절로 사라진다
+function showSuccess(message) {
+  clearTimeout(messageTimer);
+  formError.textContent = message;
+  formError.style.display = "block";
+  formError.style.color = "#28a745";
+  messageTimer = setTimeout(clearMessages, MESSAGE_TIMEOUT);
+}
 
 // 폼 제출 이벤트 핸들러
 studentForm.addEventListener("submit", function (e) {
