@@ -43,6 +43,14 @@ function clearMessages() {
   formError.style.display = "none";
 }
 
+// Form 초기화
+function resetForm() {
+  studentForm.reset();
+  editingStudentId = null;
+  submitButton.textContent = "학생 등록";
+  clearMessages(); // 추가
+}
+
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
   loadStudents();
