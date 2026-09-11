@@ -250,7 +250,14 @@ async function loadStudents() {
     renderStudentTable(students);
   } catch (error) {
     console.error("Error:", error);
-    alert(error.message);
+    showError(error.message);
+    studentTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; color: #dc3545;">
+                        오류: 데이터를 불러올 수 없습니다.
+                    </td>
+                </tr>
+            `;
   }
 }
 
