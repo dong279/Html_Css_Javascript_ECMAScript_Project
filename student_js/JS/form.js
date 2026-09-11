@@ -1,10 +1,14 @@
 // 전역 변수
 const API_BASE_URL = "http://localhost:8080";
+// 현재 수정 중인 학생 ID
+let editingStudentId = null;
 
 // DOM 요소 참조
 const studentForm = document.getElementById("studentForm");
 const studentTableBody = document.getElementById("studentTableBody");
-//에러 메세지와 로딩 메시지 출력
+const submitButton = studentForm.querySelector('button[type="submit"]');
+
+//에러메시지와 로딩메시지
 const loadingMessage = document.getElementById("loadingMessage");
 const formError = document.getElementById("formError");
 
@@ -19,6 +23,7 @@ function showError(message) {
   formError.textContent = message;
   formError.style.display = "block";
   formError.style.color = "#dc3545";
+  messageTimer = setTimeout(clearMessages, MESSAGE_TIMEOUT);
 }
 
 // 성공 메시지 표시 - MESSAGE_TIMEOUT 뒤에 저절로 사라진다
@@ -42,23 +47,6 @@ function clearMessages() {
 document.addEventListener("DOMContentLoaded", function () {
   loadStudents();
 });
-
-// 에러 메시지 표시
-function showError(message) {
-  clearTimeout(messageTimer); // 앞선 자동 초기화 예약을 취소한다
-  formError.textContent = message;
-  formError.style.display = "block";
-  formError.style.color = "#dc3545";
-}
-
-// 성공 메시지 표시 - MESSAGE_TIMEOUT 뒤에 저절로 사라진다
-function showSuccess(message) {
-  clearTimeout(messageTimer);
-  formError.textContent = message;
-  formError.style.display = "block";
-  formError.style.color = "#28a745";
-  messageTimer = setTimeout(clearMessages, MESSAGE_TIMEOUT);
-}
 
 // 폼 제출 이벤트 핸들러
 studentForm.addEventListener("submit", function (e) {
@@ -115,14 +103,14 @@ async function createStudent(studentData) {
       throw new Error(data.message || defaultMsg);
     }
 
-    alert("학생이 성공적으로 등록되었습니다.");
+    showSuccess("학생이 성공적으로 등록되었습니다.");
     studentForm.reset();
     loadStudents();
     return data;
   } catch (error) {
     console.error("Error:", error.message);
     //studentForm.reset();
-    alert(error.message);
+    showError(error.message);
   }
 }
 
@@ -144,13 +132,11 @@ async function deleteStudent(studentId) {
       throw new Error(errorData.message || defaultMsg);
     }
 
-    // alert("학생이 성공적으로 삭제되었습니다.");
     showSuccess("학생이 성공적으로 삭제되었습니다.");
     loadStudents(); // 목록 새로고침
   } catch (error) {
     console.error("Error:", error);
     showError(error.message);
-    // alert(error.message);
   }
 }
 
