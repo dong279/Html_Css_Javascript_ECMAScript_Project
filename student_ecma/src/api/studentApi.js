@@ -9,7 +9,7 @@
    --------------------------------------------------------- */
 
 // 다른 파일에서 export 한 값을 가져온다. 필요한 이름만 { } 안에 적는다.
-import { STUDENTS_URL, JSON_HEADERS } from "../config.js";
+import { STUDENTS_URL, JSON_HEADERS } from "../config";
 
 // 서버가 message 를 주지 않을 때 대신 쓸 문구.
 // 객체를 이렇게 두면 DEFAULT_MESSAGES[404] 처럼 상태 코드로 바로 꺼낼 수 있다.
