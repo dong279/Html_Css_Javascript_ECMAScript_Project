@@ -1,6 +1,6 @@
+import { fetchStudents } from "./api/studentApi";
 import "./style.css";
-// 전역 변수
-const API_BASE_URL = "http://localhost:8080";
+
 // 현재 수정 중인 학생 ID
 let editingStudentId = null;
 
@@ -18,6 +18,8 @@ const formError = document.getElementById("formError");
 const MESSAGE_TIMEOUT = 3000;
 // 자동 초기화 예약. 새 메시지가 오면 이전 예약을 취소한다.
 let messageTimer = null;
+
+fetchStudents().then((students) => console.log(students));
 
 // 에러 메시지 표시
 function showError(message) {
