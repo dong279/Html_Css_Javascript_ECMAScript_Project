@@ -7,8 +7,23 @@ import {
   deleteStudent as apiDeleteStudent,
 } from "./api/studentApi";
 
-import { studentForm, collectStudentData } from "./ui/studentForm.js";
+import {
+  studentForm,
+  collectStudentData,
+  cancelButton,
+  fillForm,
+  setEditMode,
+  resetForm,
+  scrollToForm,
+} from "./ui/studentForm.js";
+
 import { validateStudent } from "./lib/validation.js";
+import {
+  showError,
+  showSuccess,
+  clearMessages,
+  setLoading,
+} from "./ui/message.js";
 
 // 현재 수정 중인 학생 ID
 let editingStudentId = null;
@@ -70,7 +85,8 @@ studentForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
   //FormData에 저장된 값을 추출하여 서버로 전송할 중첩된 객체를 다시 생성하기
-  const studentData = collectStudentData;
+  const studentData = collectStudentData();
+  console.log(studentData);
 
   // 유효성 검사
   // 바꾼 뒤 — 돌아온 메시지를 화면에 보여 준다

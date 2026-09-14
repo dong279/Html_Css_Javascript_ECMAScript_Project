@@ -44,7 +44,7 @@ export function validateStudent(student) {
   const {
     name,
     studentNumber,
-    detailRequest: { phoneNumber, email } = {},
+    detailRequest: { phoneNumber, email },
   } = student;
 
   // 문제를 찾으면 그 자리에서 바로 돌려주고 끝낸다(early return).
