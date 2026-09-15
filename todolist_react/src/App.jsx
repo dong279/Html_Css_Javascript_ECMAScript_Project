@@ -1,9 +1,10 @@
 import "./App.css";
+import MyComponent from "./components/MyComponent";
 
 function App() {
   return (
     <>
-      <h1>hello react</h1>
+      <MyComponent name="홍길동" age={20} />
     </>
   );
 }
