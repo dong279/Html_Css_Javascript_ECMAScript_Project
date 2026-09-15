@@ -14,6 +14,8 @@ class MyComponent extends Component {
         <h3>
           Hello! {name} / {age}
         </h3>
+        <p>상태변수 value = {this.state.value}</p>
+        <button>증가</button>
       </div>
     );
   }
