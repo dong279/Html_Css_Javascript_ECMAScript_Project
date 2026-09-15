@@ -33,14 +33,6 @@ import {
 // 현재 수정 중인 학생 ID
 let editingStudentId = null;
 
-// DOM 요소 참조
-const submitButton = studentForm.querySelector('button[type="submit"]');
-
-// 초기화
-document.addEventListener("DOMContentLoaded", function () {
-  loadStudents();
-});
-
 // 폼 제출 이벤트 핸들러
 studentForm.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -178,3 +170,6 @@ async function editStudent(studentId) {
     showError(error.message);
   }
 }
+
+// Student load 함수 호출
+loadStudents();
