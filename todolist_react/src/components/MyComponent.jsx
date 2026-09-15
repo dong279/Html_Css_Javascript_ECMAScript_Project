@@ -7,16 +7,22 @@ class MyComponent extends Component {
     message: "",
     username: "",
   };
-    //event handler 함수
-    handleChange = (e)->{
-        
-    }
-
+  //   event handler 함수
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+  //   handleChange2 = (e) => {
+  //     this.setState({
+  //       username: e.target.value,
+  //     });
+  //   };
   //Component 메서드 재정의
   render() {
     const { name, age } = this.props;
     const { value, message, username } = this.state;
-    const {handleChange} = this;
+    const { handleChange } = this;
 
     return (
       <div>
@@ -36,10 +42,10 @@ class MyComponent extends Component {
         </button>
 
         <p>상태변수 message = {message}</p>
-        <input name="message" value={message} onChange={this.handleChange} />
+        <input name="message" value={message} onChange={handleChange} />
         <br />
         <p>상태변수 username = {username}</p>
-        <input name="username" value={username} />
+        <input name="username" value={username} onChange={handleChange} />
       </div>
     );
   }
