@@ -5,6 +5,7 @@
 //       || 와 달리 빈 문자열("")과 0 은 그대로 살린다.
 export const API_BASE_URL =
   import.meta.env?.VITE_API_BASE_URL ?? "http://localhost:8080";
+console.log("API_BASE_URL =" + API_BASE_URL);
 
 // 백틱(`)으로 감싸면 ${ } 안에 값을 끼워 넣을 수 있다(템플릿 리터럴).
 // 3부의 `${API_BASE_URL}/api/students` 를 매번 쓰던 것을 한 번만 만들어 둔다.
@@ -14,3 +15,6 @@ export const STUDENTS_URL = `${API_BASE_URL}/api/students`;
 export const JSON_HEADERS = {
   "Content-Type": "application/json",
 };
+
+//테스트 모드와 운영모드를 구분하는 VITE_MODE 환경변수 가져오기
+export const MODE = import.meta.env?.VITE_MODE ?? "TEST";
