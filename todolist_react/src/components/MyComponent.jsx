@@ -7,7 +7,7 @@ class MyComponent extends Component {
     message: "",
     username: "",
   };
-  //   event handler 함수
+  // event handler 함수
   handleChange = (e) => {
     this.setState({
       //message: e.target.value
