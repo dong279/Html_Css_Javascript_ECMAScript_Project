@@ -10,6 +10,8 @@ const MyComponentFunc = ({ name, age, children }) => {
         Hello! {name} / {age}
       </h3>
       {children}
+      <p>상태변수 value = {value}</p>
+      <button onClick={() => setValue(value + 1)}>증가</button>
     </div>
   );
 };
