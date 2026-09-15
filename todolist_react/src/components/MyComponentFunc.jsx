@@ -1,7 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 
-export default class MyComponentFunc extends Component {
-  render() {
-    return <div></div>;
-  }
-}
+const MyComponentFunc = ({ name, age }) => {
+  return (
+    <div>
+      <h2>함수 형태의 컴포넌트</h2>
+      <h3>
+        Hello! {name} / {age}
+      </h3>
+    </div>
+  );
+};
+
+export default MyComponentFunc;
