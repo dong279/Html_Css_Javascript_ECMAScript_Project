@@ -11,6 +11,7 @@ class MyComponent extends Component {
   render() {
     const { name, age } = this.props;
     const { value, message, username } = this.state;
+
     return (
       <div>
         <h2>클래스 형태의 컴포넌트</h2>
@@ -27,6 +28,12 @@ class MyComponent extends Component {
         >
           증가
         </button>
+
+        <p>상태변수 message = {message}</p>
+        <input name="message" value={message} />
+        <br />
+        <p>상태변수 username = {username}</p>
+        <input name="username" value={username} />
       </div>
     );
   }
