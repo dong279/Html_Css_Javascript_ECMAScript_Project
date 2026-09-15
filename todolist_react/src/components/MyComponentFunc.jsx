@@ -12,7 +12,11 @@ const MyComponentFunc = ({ name, age, children }) => {
   const { message, username } = inputs;
 
   //event handler 함수
-  const handleChange = (e) => {};
+  const handleChange = (e) => {
+    setInputs({
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <div>
