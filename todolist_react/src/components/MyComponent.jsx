@@ -16,7 +16,15 @@ class MyComponent extends Component {
           Hello! {name} / {age}
         </h3>
         <p>상태변수 value = {value}</p>
-        <button onClick={() => this.setState}>증가</button>
+        <button
+          onClick={() =>
+            this.setState({
+              value: value + 1,
+            })
+          }
+        >
+          증가
+        </button>
       </div>
     );
   }
