@@ -10,9 +10,12 @@ class MyComponent extends Component {
   //   event handler 함수
   handleChange = (e) => {
     this.setState({
+      //message: e.target.value
+      // username: e.target.value
       [e.target.name]: e.target.value,
     });
   };
+
   //   handleChange2 = (e) => {
   //     this.setState({
   //       username: e.target.value,
