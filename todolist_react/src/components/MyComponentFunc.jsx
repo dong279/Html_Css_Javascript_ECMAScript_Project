@@ -10,6 +10,7 @@ const MyComponentFunc = ({ name, age, children }) => {
     username: "",
   });
   const [valid, setValid] = useState(false);
+
   //비구조화 할당
   const { message, username } = inputs;
 
@@ -23,12 +24,15 @@ const MyComponentFunc = ({ name, age, children }) => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleEnter = (e) => {
     if (e.keyCode === 13) {
+      setValid(true);
+      setInputs({
+        ...inputs,
+        message: "",
+      });
     }
   };
-
   return (
     <div>
       <h2>함수 형태의 컴포넌트</h2>
