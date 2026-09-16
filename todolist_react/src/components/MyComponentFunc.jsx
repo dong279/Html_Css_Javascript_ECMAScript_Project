@@ -31,6 +31,7 @@ const MyComponentFunc = ({ name, age, children }) => {
         ...inputs,
         message: "",
       });
+      myUsername.current.focus();
     }
   };
   return (
