@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-
+import "./MyComponent.css";
 class MyComponent extends Component {
   //상태객체
   state = {
     value: 0,
     message: "",
     username: "",
+    isValid: false,
   };
   // event handler 함수
   handleChange = (e) => {
@@ -16,6 +17,8 @@ class MyComponent extends Component {
     });
   };
 
+  handleEnter = (e) => {};
+
   //   handleChange2 = (e) => {
   //     this.setState({
   //       username: e.target.value,
@@ -24,8 +27,8 @@ class MyComponent extends Component {
   //Component 메서드 재정의
   render() {
     const { name, age } = this.props;
-    const { value, message, username } = this.state;
-    const { handleChange } = this;
+    const { value, message, username, isValid } = this.state;
+    const { handleChange, handleEnter } = this;
 
     return (
       <div>
@@ -45,10 +48,21 @@ class MyComponent extends Component {
         </button>
 
         <p>상태변수 message = {message}</p>
-        <input name="message" value={message} onChange={handleChange} />
+        <input
+          name="message"
+          value={message}
+          onChange={handleChange}
+          onKeyDown={handleEnter}
+        />
         <br />
         <p>상태변수 username = {username}</p>
-        <input name="username" value={username} onChange={handleChange} />
+        <input
+          name="username"
+          value={username}
+          onChange={handleChange}
+          className={isValid ? "success" : "failure"}
+          ref={(ref) => (this.myUsername = ref)}
+        />
       </div>
     );
   }

@@ -14,6 +14,7 @@ const MyComponentFunc = ({ name, age, children }) => {
   //event handler 함수
   const handleChange = (e) => {
     setInputs({
+      ...inputs,
       [e.target.name]: e.target.value,
     });
   };
