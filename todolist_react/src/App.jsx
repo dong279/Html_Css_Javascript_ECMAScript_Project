@@ -43,6 +43,14 @@ function App() {
     }
   };
 
+  const handleToggle = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, checked: !todo.checked } : todo,
+      ),
+    );
+  };
+
   return (
     <>
       <TodoListTemplate
