@@ -17,7 +17,15 @@ class MyComponent extends Component {
     });
   };
 
-  handleEnter = (e) => {};
+  handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      this.setState({
+        isValid: true,
+      });
+      //html dom 직접 접근
+      this.myUsername.focus();
+    }
+  };
 
   //   handleChange2 = (e) => {
   //     this.setState({
