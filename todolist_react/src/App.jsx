@@ -44,7 +44,16 @@ function App() {
 
   return (
     <>
-      <TodoListTemplate form={<Form myTodo={todo} myChange={handleChange} />}>
+      <TodoListTemplate
+        form={
+          <Form
+            myTodo={todo}
+            myChange={handleChange}
+            myCreate={handleCreate}
+            myEnter={handleEnter}
+          />
+        }
+      >
         <TodoItemList />
       </TodoListTemplate>
     </>
