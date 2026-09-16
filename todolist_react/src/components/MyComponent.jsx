@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./MyComponent.css";
+
 class MyComponent extends Component {
   //상태객체
   state = {
@@ -8,11 +9,12 @@ class MyComponent extends Component {
     username: "",
     isValid: false,
   };
-  // event handler 함수
+
+  //event handler 함수
   handleChange = (e) => {
     this.setState({
       //message: e.target.value
-      // username: e.target.value
+      //username: e.target.value
       [e.target.name]: e.target.value,
     });
   };
@@ -21,17 +23,13 @@ class MyComponent extends Component {
     if (e.keyCode === 13) {
       this.setState({
         isValid: true,
+        message: "",
       });
       //html dom 직접 접근
       this.myUsername.focus();
-    }
+    } //if
   };
 
-  //   handleChange2 = (e) => {
-  //     this.setState({
-  //       username: e.target.value,
-  //     });
-  //   };
   //Component 메서드 재정의
   render() {
     const { name, age } = this.props;
@@ -73,7 +71,7 @@ class MyComponent extends Component {
         />
       </div>
     );
-  }
+  } //render
 }
 
 export default MyComponent;
