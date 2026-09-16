@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import "./MyComponent.css";
 
 const MyComponentFunc = ({ name, age, children }) => {
   const [value, setValue] = useState(0);
@@ -8,6 +9,7 @@ const MyComponentFunc = ({ name, age, children }) => {
     message: "",
     username: "",
   });
+  const [valid, setValid] = useState(false);
   //비구조화 할당
   const { message, username } = inputs;
 
