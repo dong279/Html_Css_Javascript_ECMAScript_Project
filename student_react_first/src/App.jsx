@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { createStudent, fetchStudents, updateStudent } from "./api/studentApi";
+import { fetchStudents, createStudent, updateStudent } from "./api/studentApi";
 import StudentTable from "./components/StudentTable";
 import StudentForm from "./components/StudentForm";
 import { EMPTY_FORM, toRequest } from "./lib/studentData";
@@ -138,7 +138,8 @@ function App() {
 
   // 실습 5-9 에서 속을 채운다.
   function resetForm() {
-    console.log("resetForm called..");
+    setForm(EMPTY_FORM);
+    setEditingId(null);
   } //resetForm
 
   return (
