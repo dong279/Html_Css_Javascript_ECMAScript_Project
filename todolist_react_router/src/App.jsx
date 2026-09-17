@@ -22,48 +22,48 @@ import "./App.css";
 
    같은 모양을 두 번 적지 않으려고 밖으로 빼 두었다. */
 function navClass({ isActive }) {
-    return isActive ? "nav-link active" : "nav-link";
+  return isActive ? "nav-link active" : "nav-link";
 }
 
 function App() {
-    return (
-        <>
-            {/* 머리말은 Routes 바깥에 있다. 그래서 주소가 바뀌어도 그대로 남는다. */}
-            <header className="app-header">
-                <h1 className="app-title">React 연습</h1>
+  return (
+    <>
+      {/* 머리말은 Routes 바깥에 있다. 그래서 주소가 바뀌어도 그대로 남는다. */}
+      <header className="app-header">
+        <h1 className="app-title">React 연습</h1>
 
-                <nav className="app-nav">
-                    {/* to 는 옮겨 갈 주소다. a 태그처럼 보이지만
+        <nav className="app-nav">
+          {/* to 는 옮겨 갈 주소다. a 태그처럼 보이지만
                         페이지를 새로 내려받지 않고 주소만 바꾼다.
 
                         end 는 "주소가 정확히 / 일 때만 active" 라는 뜻이다.
                         이것이 없으면 /basic 에 있을 때도 / 가 active 가 된다.
                         / 가 모든 주소의 앞부분이기 때문이다. */}
-                    <NavLink to="/" end className={navClass}>
-                        할 일 목록
-                    </NavLink>
+          <NavLink to="/" end className={navClass}>
+            할 일 목록
+          </NavLink>
 
-                    <NavLink to="/basic" className={navClass}>
-                        기초 컴포넌트
-                    </NavLink>
-                </nav>
-            </header>
+          <NavLink to="/basic" className={navClass}>
+            기초 컴포넌트
+          </NavLink>
+        </nav>
+      </header>
 
-            {/* Routes 안에서 주소와 맞는 Route 하나만 그려진다.
+      {/* Routes 안에서 주소와 맞는 Route 하나만 그려진다.
                 위에서 아래로 훑어 맞는 것을 고르는 것이 아니라,
                 React Router 가 가장 잘 맞는 하나를 골라 준다. */}
-            <main className="page">
-                <Routes>
-                    <Route path="/" element={<TodoPage />} />
-                    <Route path="/basic" element={<BasicPage />} />
+      <main className="page">
+        <Routes>
+          <Route path="/" element={<TodoPage />} />
+          <Route path="/basic" element={<BasicPage />} />
 
-                    {/* * 는 "위의 어느 것과도 맞지 않는 주소" 다.
+          {/* * 는 "위의 어느 것과도 맞지 않는 주소" 다.
                         이것이 없으면 /abcd 같은 주소에서 빈 화면이 나온다. */}
-                    <Route path="*" element={<p>없는 주소입니다.</p>} />
-                </Routes>
-            </main>
-        </>
-    );
+          <Route path="*" element={<p>없는 주소입니다.</p>} />
+        </Routes>
+      </main>
+    </>
+  );
 }
 
 export default App;

@@ -10,10 +10,10 @@
    라우터와 얽힌 코드는 한 줄도 없습니다. 페이지는 그냥 컴포넌트입니다.
    --------------------------------------------------------- */
 
-import { useCallback, useState } from 'react';
-import Form from '../components/Form'
-import TodoItemList from '../components/TodoItemList'
-import TodoListTemplate from '../components/TodoListTemplate'
+import { useCallback, useState } from "react";
+import Form from "../components/Form";
+import TodoItemList from "../components/TodoItemList";
+import TodoListTemplate from "../components/TodoListTemplate";
 
 /* E-18 · E-20 에서 성능을 재 볼 때만 살리는 코드.
    아래 useState 자리의 주석도 함께 바꿔 끼운다.
@@ -35,7 +35,7 @@ function TodoPage() {
   ]);
   // 성능을 재 볼 때: 위를 주석 처리하고 아래를 살린다(맨 위 initialTodos 도 함께).
   // const [todos, setTodos] = useState(initialTodos);
-  
+
   // 다음에 만들 할 일의 번호. 0,1,2 를 이미 썼으므로 3부터.
   const [nextId, setNextId] = useState(3);
 
@@ -52,8 +52,8 @@ function TodoPage() {
 
     // 기존 배열을 펼치고 뒤에 하나를 더한 "새 배열" 을 넣는다
     setTodos([...todos, newTodo]);
-    setTodo("");                // 입력칸 비우기
-    setNextId(nextId + 1);      // 다음 번호 준비
+    setTodo(""); // 입력칸 비우기
+    setNextId(nextId + 1); // 다음 번호 준비
   };
 
   const handleEnter = (e) => {
@@ -70,8 +70,8 @@ function TodoPage() {
   const handleToggle = useCallback((id) => {
     setTodos((prev) =>
       prev.map((todo) =>
-        todo.id === id ? { ...todo, checked: !todo.checked } : todo
-      )
+        todo.id === id ? { ...todo, checked: !todo.checked } : todo,
+      ),
     );
   }, []);
 
@@ -81,21 +81,24 @@ function TodoPage() {
 
   return (
     <>
-      <TodoListTemplate form={
-        <Form myTodo={todo}
-          myChange={handleChange}
-          myCreate={handleCreate}
-          myEnter={handleEnter}
-        />
-      }>
-        <TodoItemList myTodos={todos}
+      <TodoListTemplate
+        form={
+          <Form
+            myTodo={todo}
+            myChange={handleChange}
+            myCreate={handleCreate}
+            myEnter={handleEnter}
+          />
+        }
+      >
+        <TodoItemList
+          myTodos={todos}
           myToggle={handleToggle}
           myRemove={handleRemove}
         />
       </TodoListTemplate>
-
     </>
-  )
+  );
 }
 
-export default TodoPage
+export default TodoPage;
