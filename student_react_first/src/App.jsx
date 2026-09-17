@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import "./style.css";
 import { fetchStudents } from "./api/studentApi";
+import "./style.css";
+import StudentTable from "./components/StudentTable";
 
 function App() {
   //상태 변수 선언
@@ -10,7 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false); // "로딩 중..." 을 보일까
   const [listError, setListError] = useState(null); // 표 자리에 낼 오류 문구
   // 메시지는 { text: "문구", type: "error" 또는 "success" } 모양으로 담는다.
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState(null); //성공,오류 메시지
 
   // 수정 모드인지는 editingId 로 알 수 있으므로 따로 state 를 두지 않는다.
   const isEditing = editingId !== null;
@@ -41,9 +42,22 @@ function App() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 처음 한 번 목록을 불러오는 것은 의도된 동작입니다
     loadStudents();
   }, []);
+
+  function handleEdit() {}
+
+  function handleDelete() {}
+
   return (
     <>
       <h1>학생 관리 시스템</h1>
+
+      <StudentTable
+        students={students}
+        loading={loading}
+        error={listError}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
     </>
   );
 }
