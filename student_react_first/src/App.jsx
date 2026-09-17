@@ -46,9 +46,9 @@ function App() {
     loadStudents();
   }, []);
 
-  function handleEdit() {}
+  function handleEdit() {} //handleEdit
 
-  function handleDelete() {}
+  function handleDelete() {} //handleDelete
 
   function handleChange(event) {
     // 어느 칸이 바뀌었는지, 값은 무엇인지 꺼낸다.
@@ -67,7 +67,17 @@ function App() {
     next[name] = value;
 
     setForm(next);
-  }
+  } //handleChange
+
+  // 실습 5-8 에서 속을 채운다.
+  function handleSubmit(event) {
+    // 이 한 줄은 지금 넣어야 한다. 없으면 제출할 때마다
+    // 브라우저가 페이지를 새로 불러와 입력한 값이 날아간다.
+    event.preventDefault();
+  } //handleSubmit
+
+  // 실습 5-9 에서 속을 채운다.
+  function resetForm() {} //resetForm
 
   return (
     <>
