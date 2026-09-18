@@ -1,147 +1,144 @@
 /* ---------------------------------------------------------
-   학생 등록 · 수정 페이지 — 주소 "/new" 와 "/edit/:id"
-   한 컴포넌트가 두 주소를 맡습니다. 등록인지 수정인지는
-   주소에 id 가 붙어 있는지로 가릅니다.
+   학생 등록 · 수정 폼
+   4부까지는 폼이 index.html 에 있었고, ui/studentForm.js 가
+   그 요소를 찾아 값을 읽고 쓰고 버튼 글자를 바꿨습니다.
 
-     /new       →  id 가 없다   →  등록 모드
-     /edit/3    →  id 가 "3"   →  수정 모드
+   React 에서는 폼이 이 파일 안에 있습니다. 그리고 입력칸의
+   값은 DOM 이 아니라 부모가 준 form 객체에서 옵니다.
 
-   5부에서 useState 로 들고 있던 editingId 가 사라졌습니다.
-   그 값이 주소로 옮겨갔기 때문입니다. 덕분에 수정 화면에서
-   새로고침을 해도 수정 모드가 그대로 유지됩니다.
+     화면에 보이는 값 = props.form
+     값이 바뀌면      = props.onChange 로 부모에게 알린다
+
+   이런 입력을 제어 컴포넌트(controlled component)라고 합니다.
+   이 컴포넌트는 값을 저장하지 않습니다. 그리기만 합니다.
+
+   입력칸 여섯 개가 생김새는 같지만 일부러 하나씩 펼쳐 적었습니다.
+   위에서 아래로 한 번에 읽히는 것이 지금은 더 중요하기 때문입니다.
    --------------------------------------------------------- */
 
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import MessageBox from "./MessageBox.jsx";
 
-import {
-  createStudent,
-  fetchStudent,
-  updateStudent,
-} from "../api/studentApi.js";
-import { validateStudent } from "../lib/validation.js";
-import { EMPTY_FORM, toRequest, toFormValues } from "../lib/studentData.js";
-import StudentForm from "../components/StudentForm.jsx";
-
-function StudentFormPage() {
-  /* useParams 는 주소의 :id 자리에 있던 값을 돌려준다.
-       언제나 문자열이고, /new 처럼 그 자리가 없으면 undefined 다. */
-  const { id } = useParams();
-  const isEditing = id !== undefined;
-
-  // useNavigate 는 "다른 주소로 옮겨 가는 함수" 를 돌려준다.
-  const navigate = useNavigate();
-
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [message, setMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  /* 수정 모드면 서버에서 그 학생을 불러와 폼을 채운다.
-       의존성 배열에 id 가 있으므로, 주소가 /edit/3 에서 /edit/7 로
-       바뀌면 이 효과가 다시 실행된다. */
-  useEffect(() => {
-    if (!isEditing) {
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadStudent() {
-      setLoading(true);
-      try {
-        const student = await fetchStudent(id);
-        // 불러오는 도중에 다른 페이지로 떠났으면 state 를 건드리지 않는다.
-        if (!cancelled) {
-          setForm(toFormValues(student));
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        if (!cancelled) {
-          setMessage({ text: error.message, type: "error" });
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadStudent();
-
-    // 정리 함수 — 이 페이지를 떠날 때 위 플래그를 올린다.
-    return () => {
-      cancelled = true;
-    };
-  }, [id, isEditing]);
-
-  function handleChange(event) {
-    // 입력칸 여섯 개가 모두 이 함수 하나를 부른다.
-    // 어느 칸인지는 input 에 적어 둔 name 이 알려 준다.
-    const name = event.target.name;
-    const value = event.target.value;
-
-    const next = { ...form };
-    next[name] = value;
-    setForm(next);
+/* 부모(App)가 넘겨주는 값들 */
+function StudentForm({
+  form, // 화면에 보일 입력값 여섯 개
+  isEditing, // 수정 모드인가
+  message, // 폼 아래 보여 줄 메시지
+  onChange, // 입력칸이 바뀔 때 부를 함수
+  onSubmit, // 제출할 때 부를 함수
+  onCancel, // 취소를 누를 때 부를 함수
+  containerRef, // 수정 시 이 위치로 스크롤하기 위한 참조
+}) {
+  // 4부 setEditMode 가 classList.toggle 로 하던 일을 문자열로 표현한다.
+  let containerClass = "form-container";
+  if (isEditing) {
+    containerClass = "form-container editing";
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setMessage(null);
-
-    const studentData = toRequest(form);
-
-    const errorMessage = validateStudent(studentData);
-    if (errorMessage) {
-      setMessage({ text: errorMessage, type: "error" });
-      return;
-    }
-
-    try {
-      if (isEditing) {
-        await updateStudent(id, studentData);
-      } else {
-        await createStudent(studentData);
-      }
-
-      /* 목록으로 돌아가면서 보여 줄 메시지를 함께 실어 보낸다.
-               받는 쪽은 StudentListPage 의 useLocation() 이다. */
-      const text = isEditing
-        ? "학생 정보가 성공적으로 수정되었습니다."
-        : "학생이 성공적으로 등록되었습니다.";
-
-      navigate("/", { state: { message: text } });
-    } catch (error) {
-      console.error("Error:", error);
-      setMessage({ text: error.message, type: "error" });
-    }
-  }
-
-  // 취소하면 목록으로 돌아간다.
-  function handleCancel() {
-    navigate("/");
+  // 등록 모드와 수정 모드에서 글자만 달라진다.
+  let actionLabel = "등록";
+  if (isEditing) {
+    actionLabel = "수정";
   }
 
   return (
-    <div className="page">
-      {/* 폼만 있는 페이지이므로 목록으로 돌아갈 길을 위쪽에 둔다.
-                머리말의 내비게이션과 겹치지만, 보고 있던 자리에서 가까운 편이 낫다. */}
-      <Link to="/" className="back-link">
-        &larr; 학생 목록으로
-      </Link>
+    <div className={containerClass} ref={containerRef}>
+      <h2>학생 {actionLabel}</h2>
 
-      {loading && <div className="loading">불러오는 중...</div>}
+      {/* onSubmit 안에서 event.preventDefault() 를 부르는 것은 4부와 같다. */}
+      <form onSubmit={onSubmit}>
+        <div className="form-grid">
+          {/* 입력칸 한 개는 언제나 이 세 가지가 짝이다.
+                          value    = {form.어느칸}   보이는 값은 부모에게서 온다
+                          onChange = {onChange}      바뀌면 부모에게 알린다
+                          name     = "어느칸"        부모가 어느 칸인지 알아보는 이름 */}
+          <div className="form-group">
+            <label htmlFor="name">이름:</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              value={form.name}
+              onChange={onChange}
+            />
+          </div>
 
-      <StudentForm
-        form={form}
-        isEditing={isEditing}
-        message={message}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-      />
+          <div className="form-group">
+            <label htmlFor="studentNumber">학번:</label>
+            <input
+              id="studentNumber"
+              name="studentNumber"
+              type="text"
+              required
+              value={form.studentNumber}
+              onChange={onChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="address">주소:</label>
+            <input
+              id="address"
+              name="address"
+              type="text"
+              required
+              value={form.address}
+              onChange={onChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="phoneNumber">전화번호:</label>
+            <input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="tel"
+              required
+              value={form.phoneNumber}
+              onChange={onChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">이메일:</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={form.email}
+              onChange={onChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="dateOfBirth">생년월일:</label>
+            <input
+              id="dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={onChange}
+            />
+          </div>
+        </div>
+
+        <div className="button-group">
+          <button type="submit">학생 {actionLabel}</button>
+
+          {/* 4부에서는 style.display 를 바꿨지만, 여기서는 아예 그리지 않는다.
+                        조건 && 화면 은 "조건이 참일 때만 그린다"는 뜻이다. */}
+          {isEditing && (
+            <button type="button" className="cancel-btn" onClick={onCancel}>
+              취소
+            </button>
+          )}
+
+          <MessageBox message={message} />
+        </div>
+      </form>
     </div>
   );
 }
 
-export default StudentFormPage;
+export default StudentForm;
