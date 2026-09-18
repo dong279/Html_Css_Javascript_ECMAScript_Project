@@ -1,118 +1,145 @@
 /* ---------------------------------------------------------
-   학생 목록 표
-   4부 ui/studentTable.js 에서 사라진 것들입니다.
+   학생 등록 · 수정 폼 — 리팩토링한 것 (실습 5-12)
 
-     createElement / appendChild   →  JSX 로 바로 쓴다
-     innerHTML = ""                →  students 가 바뀌면 React 가 다시 그린다
-     addCell / createActionButton  →  필요 없다
-     data-action + 이벤트 위임     →  onClick 에 함수를 직접 넘긴다
+   StudentForm.jsx 와 하는 일이 똑같습니다. 화면도 동작도 같습니다.
+   달라진 것은 코드의 모양뿐입니다.
 
-   4부에서 이벤트 위임을 쓴 이유는 "행을 다시 그리면 이벤트가
-   떨어져 나가기 때문" 이었습니다. React 는 그릴 때마다 onClick 을
-   다시 붙여 주므로 그 문제가 없습니다.
+     StudentForm.jsx        입력칸 여섯 개를 하나씩 펼쳐 적었다
+     StudentFormField.jsx   같은 부분을 Field 하나로 묶었다
+
+   동작을 바꾸지 않고 코드의 모양만 고치는 일을
+   리팩토링(refactoring)이라고 합니다. 그래서 앱을 다 만든 뒤에 합니다.
+
+   두 파일 중 하나만 씁니다. App.jsx 의 import 한 줄을 바꿔 가며
+   어느 쪽이 읽기 좋은지 직접 견주어 보세요.
    --------------------------------------------------------- */
 
-import { memo } from "react";
+import MessageBox from "./MessageBox.jsx";
 
-// 표의 열 개수. colSpan 에 쓴다.
-const COLUMN_COUNT = 7;
+/* 입력칸 한 개를 그리는 작은 컴포넌트.
+   여섯 칸에서 달라지는 것은 아래 네 가지뿐이라, 그것만 밖에서 받는다.
 
-/* 부모(App)가 넘겨주는 값들
-     students  학생 배열
-     loading   불러오는 중인가
-     error     목록을 못 불러왔을 때의 메시지 (없으면 null)
-     onEdit    수정 버튼을 눌렀을 때 부를 함수
-     onDelete  삭제 버튼을 눌렀을 때 부를 함수 */
-function StudentTable({ students, loading, error, onEdit, onDelete }) {
-  /* tbody 안에 무엇을 그릴지 세 경우로 나눠서 정한다.
-       JSX 안에 && 와 ? : 를 이어 쓰면 읽기 어려우므로,
-       먼저 rows 에 담아 두고 아래 표 안에 끼워 넣는다. */
-  let rows;
+     name      칸의 이름. id 와 name 속성에 함께 쓴다
+     label     화면에 보일 글자
+     type      text · tel · email · date
+     required  반드시 채워야 하는 칸인가
 
-  if (error) {
-    // (1) 목록을 못 불러왔다
-    rows = (
-      <tr>
-        <td colSpan={COLUMN_COUNT} className="error-row">
-          {error}
-        </td>
-      </tr>
-    );
-  } else if (students.length === 0 && !loading) {
-    // (2) 목록이 비었다. 불러오는 중일 때는 안내를 내지 않는다.
-    //     그래야 화면이 잠깐 깜빡이지 않는다.
-    rows = (
-      <tr>
-        <td colSpan={COLUMN_COUNT} className="empty-row">
-          등록된 학생이 없습니다.
-        </td>
-      </tr>
-    );
-  } else {
-    // (3) 학생 한 명을 행 하나로 그린다.
-    //     map 은 배열의 값 하나하나를 화면 조각으로 바꿔 준다.
-    rows = students.map((student) => (
-      // key 는 React 가 어느 행이 어느 행인지 알아보는 표시다.
-      // 없으면 목록이 바뀔 때 엉뚱한 행이 다시 그려질 수 있다.
-      <tr key={student.id}>
-        <td>{student.name}</td>
-        <td>{student.studentNumber}</td>
-        <td>{student.detail?.address ?? "-"}</td>
-        <td>{student.detail?.phoneNumber ?? "-"}</td>
-        <td>{student.detail?.email ?? "-"}</td>
-        <td>{student.detail?.dateOfBirth ?? "-"}</td>
-        <td>
-          {/* data-id 도 Number(id) 도 필요 없다. id 를 그대로 넘긴다.
-                        onClick 에는 함수를 "넘겨야" 한다. onEdit(student.id) 라고
-                        쓰면 그리는 순간 바로 실행되므로 () => 로 감싼다. */}
-          <button
-            type="button"
-            className="edit-btn"
-            onClick={() => onEdit(student.id)}
-          >
-            수정
-          </button>
-          <button
-            type="button"
-            className="delete-btn"
-            onClick={() => onDelete(student.id)}
-          >
-            삭제
-          </button>
-        </td>
-      </tr>
-    ));
-  }
+   value 와 onChange 는 받은 것을 그대로 넘긴다.
+   이 컴포넌트도 값을 갖지 않는다. 그리기만 한다.
 
+   컴포넌트 이름은 반드시 대문자로 시작해야 한다.
+   소문자로 쓰면 React 가 <div> 같은 HTML 태그로 본다. */
+function Field({ name, label, type, required, value, onChange }) {
   return (
-    <div className="table-container">
-      <h2>학생 목록</h2>
-
-      {/* 4부 setLoading() 대신 조건부 렌더링을 쓴다. */}
-      {loading && <div className="loading">로딩 중...</div>}
-
-      <table>
-        <thead>
-          <tr>
-            <th>이름</th>
-            <th>학번</th>
-            <th>주소</th>
-            <th>전화번호</th>
-            <th>이메일</th>
-            <th>생년월일</th>
-            <th>액션</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
+    <div className="form-group">
+      <label htmlFor={name}>{label}:</label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        required={required}
+        value={value}
+        onChange={onChange}
+      />
     </div>
   );
 }
 
-/* 받은 props 가 그대로면 다시 그리지 않는다(실습 5-13).
-   폼에 글자를 칠 때마다 App 이 다시 그려지는데, 그때 students 는
-   바뀌지 않았으므로 이 표까지 다시 그릴 까닭이 없다.
+/* 부모(App)가 넘겨주는 값들 — StudentForm.jsx 와 똑같다 */
+function StudentForm({
+  form, // 화면에 보일 입력값 여섯 개
+  isEditing, // 수정 모드인가
+  message, // 폼 아래 보여 줄 메시지
+  onChange, // 입력칸이 바뀔 때 부를 함수
+  onSubmit, // 제출할 때 부를 함수
+  onCancel, // 취소를 누를 때 부를 함수
+}) {
+  // 4부 setEditMode 가 classList.toggle 로 하던 일을 문자열로 표현한다.
+  let containerClass = "form-container";
+  if (isEditing) {
+    containerClass = "form-container editing";
+  }
 
-   이것이 듣게 하려면 onEdit 과 onDelete 가 매번 새 함수여서는 안 된다.
-   그래서 App 쪽에서 useCallback 으로 고정해 두었다. */
-export default memo(StudentTable);
+  // 등록 모드와 수정 모드에서 글자만 달라진다.
+  let actionLabel = "등록";
+  if (isEditing) {
+    actionLabel = "수정";
+  }
+
+  return (
+    <div className={containerClass}>
+      <h2>학생 {actionLabel}</h2>
+
+      {/* onSubmit 안에서 event.preventDefault() 를 부르는 것은 4부와 같다. */}
+      <form onSubmit={onSubmit}>
+        {/* 펼쳐 쓸 때 여덟 줄이던 칸 하나가 한 줄이 됐다.
+                    달라지는 네 가지만 적고 나머지는 Field 가 알아서 한다. */}
+        <div className="form-grid">
+          <Field
+            name="name"
+            label="이름"
+            type="text"
+            required
+            value={form.name}
+            onChange={onChange}
+          />
+          <Field
+            name="studentNumber"
+            label="학번"
+            type="text"
+            required
+            value={form.studentNumber}
+            onChange={onChange}
+          />
+          <Field
+            name="address"
+            label="주소"
+            type="text"
+            required
+            value={form.address}
+            onChange={onChange}
+          />
+          <Field
+            name="phoneNumber"
+            label="전화번호"
+            type="tel"
+            required
+            value={form.phoneNumber}
+            onChange={onChange}
+          />
+          <Field
+            name="email"
+            label="이메일"
+            type="email"
+            required
+            value={form.email}
+            onChange={onChange}
+          />
+
+          {/* 생년월일만 required 를 적지 않는다. 비워 두어도 된다. */}
+          <Field
+            name="dateOfBirth"
+            label="생년월일"
+            type="date"
+            value={form.dateOfBirth}
+            onChange={onChange}
+          />
+        </div>
+
+        <div className="button-group">
+          <button type="submit">학생 {actionLabel}</button>
+
+          {/* 4부에서는 style.display 를 바꿨지만, 여기서는 아예 그리지 않는다.
+                        조건 && 화면 은 "조건이 참일 때만 그린다"는 뜻이다. */}
+          <button type="button" className="cancel-btn" onClick={onCancel}>
+            취소
+          </button>
+
+          <MessageBox message={message} />
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export default StudentForm;
