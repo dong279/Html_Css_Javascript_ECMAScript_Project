@@ -53,7 +53,6 @@ function StudentForm({
   onChange, // 입력칸이 바뀔 때 부를 함수
   onSubmit, // 제출할 때 부를 함수
   onCancel, // 취소를 누를 때 부를 함수
-  containerRef, // 수정 시 이 위치로 스크롤하기 위한 참조
 }) {
   // 4부 setEditMode 가 classList.toggle 로 하던 일을 문자열로 표현한다.
   let containerClass = "form-container";
@@ -68,7 +67,7 @@ function StudentForm({
   }
 
   return (
-    <div className={containerClass} ref={containerRef}>
+    <div className={containerClass}>
       <h2>학생 {actionLabel}</h2>
 
       {/* onSubmit 안에서 event.preventDefault() 를 부르는 것은 4부와 같다. */}
@@ -132,11 +131,9 @@ function StudentForm({
 
           {/* 4부에서는 style.display 를 바꿨지만, 여기서는 아예 그리지 않는다.
                         조건 && 화면 은 "조건이 참일 때만 그린다"는 뜻이다. */}
-          {isEditing && (
-            <button type="button" className="cancel-btn" onClick={onCancel}>
-              취소
-            </button>
-          )}
+          <button type="button" className="cancel-btn" onClick={onCancel}>
+            취소
+          </button>
 
           <MessageBox message={message} />
         </div>
