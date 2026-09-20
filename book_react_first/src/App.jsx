@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { fetchBooks } from "./api/bookApi.js";
+import BookTable from "./components/BookTable.jsx";
+
 import "./style.css";
 
 function App() {
@@ -18,7 +20,6 @@ function App() {
 
     try {
       const data = await fetchBooks();
-      console.log("불러온 도서:", data); // 확인용 — 다음 과제에서 지운다
       setBooks(data);
     } catch (error) {
       console.error("Error:", error);
@@ -32,11 +33,25 @@ function App() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 처음 한 번 목록을 불러오는 것은 의도된 동작입니다
     loadBooks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function handleEdit() {}
+  function handleDelete() {}
+  function handleDetail() {}
 
   return (
     <>
       <h1>도서 관리 시스템</h1>
+
+      <BookTable
+        books={books}
+        loading={loading}
+        error={listError}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onDetail={handleDetail}
+      />
     </>
   );
 }
