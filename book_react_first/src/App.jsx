@@ -10,7 +10,8 @@ import {
 import { validateBook } from "./lib/validation.js";
 import { EMPTY_FORM, toRequest, toFormValues } from "./lib/bookData.js";
 import { APP_MODE } from "./config.js";
-import BookForm from "./components/BookForm.jsx";
+// import BookForm from "./components/BookForm.jsx";
+import BookForm from "./components/BookFormField.jsx";
 import BookTable from "./components/BookTable.jsx";
 import BookDetail from "./components/BookDetail.jsx";
 import "./style.css";
