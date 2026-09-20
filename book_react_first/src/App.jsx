@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { fetchBooks } from "./api/bookApi.js";
-import { EMPTY_FORM } from "./lib/bookData.js";
+import { fetchBooks, createBook, updateBook } from "./api/bookApi.js";
+import { validateBook } from "./lib/validation.js";
+import { EMPTY_FORM, toRequest } from "./lib/bookData.js";
 
 import BookForm from "./components/BookForm.jsx";
 import BookTable from "./components/BookTable.jsx";
@@ -20,6 +21,7 @@ function App() {
   const [detailBook, setDetailBook] = useState(null); // 상세 보기로 고른 도서
 
   const isEditing = editingId !== null;
+
   async function loadBooks() {
     setLoading(true);
     setListError(null);
@@ -66,9 +68,40 @@ function App() {
     setEditingId(null);
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    setMessage({ text: "테스트 성공 메시지입니다.", type: "success" });
+  async function handleSubmit(event) {
+    event.preventDefault(); // React 에서도 필요하다
+    setMessage(null);
+
+    const bookData = toRequest(form);
+
+    // 문제가 있으면 문구를, 없으면 null 을 돌려준다.
+    const errorMessage = validateBook(bookData);
+    if (errorMessage) {
+      setMessage({ text: errorMessage, type: "error" });
+      return; // early return
+    }
+
+    try {
+      if (editingId) {
+        await updateBook(editingId, bookData);
+        setMessage({
+          text: "도서 정보가 성공적으로 수정되었습니다.",
+          type: "success",
+        });
+      } else {
+        await createBook(bookData);
+        setMessage({
+          text: "도서가 성공적으로 등록되었습니다.",
+          type: "success",
+        });
+      }
+
+      resetForm();
+      await loadBooks(); // 목록 새로고침
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ text: error.message, type: "error" }); // 서버가 보낸 문구
+    }
   }
 
   function handleEdit() {}
