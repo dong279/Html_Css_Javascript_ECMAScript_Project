@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { fetchBooks } from "./api/bookApi.js";
 import "./style.css";
 
 function App() {
@@ -10,6 +11,28 @@ function App() {
   const [listError, setListError] = useState(null); // 표 자리에 낼 오류 문구
   const [message, setMessage] = useState(null); // { text, type } 또는 null
   const [detailBook, setDetailBook] = useState(null); // 상세 보기로 고른 도서
+
+  async function loadBooks() {
+    setLoading(true);
+    setListError(null);
+
+    try {
+      const data = await fetchBooks();
+      console.log("불러온 도서:", data); // 확인용 — 다음 과제에서 지운다
+      setBooks(data);
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ text: error.message, type: "error" });
+      setListError("오류: 데이터를 불러올 수 없습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- 처음 한 번 목록을 불러오는 것은 의도된 동작입니다
+    loadBooks();
+  }, []);
 
   return (
     <>
