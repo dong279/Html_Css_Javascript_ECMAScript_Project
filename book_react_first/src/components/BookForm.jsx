@@ -1,3 +1,5 @@
+import MessageBox from "./MessageBox.jsx";
+
 function BookForm({
   form,
   isEditing,
@@ -150,7 +152,7 @@ function BookForm({
             </button>
           )}
 
-          {message && <span className="error-message">{message.text}</span>}
+          <MessageBox message={message} />
         </div>
       </form>
     </div>

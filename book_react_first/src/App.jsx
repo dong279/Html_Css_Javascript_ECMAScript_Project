@@ -8,6 +8,8 @@ import BookTable from "./components/BookTable.jsx";
 
 import "./style.css";
 
+const MESSAGE_TIMEOUT = 3000;
+
 function App() {
   const [books, setBooks] = useState([]); // 표에 그릴 도서 목록
   const [form, setForm] = useState(EMPTY_FORM); // 입력칸 11개의 값
@@ -16,8 +18,8 @@ function App() {
   const [listError, setListError] = useState(null); // 표 자리에 낼 오류 문구
   const [message, setMessage] = useState(null); // { text, type } 또는 null
   const [detailBook, setDetailBook] = useState(null); // 상세 보기로 고른 도서
-  const isEditing = editingId !== null;
 
+  const isEditing = editingId !== null;
   async function loadBooks() {
     setLoading(true);
     setListError(null);
@@ -41,6 +43,19 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+    if (message.type !== "success") {
+      return;
+    }
+
+    const timer = setTimeout(() => setMessage(null), MESSAGE_TIMEOUT);
+
+    return () => clearTimeout(timer);
+  }, [message]);
+
   function handleChange(event) {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
@@ -53,7 +68,7 @@ function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log("지금 폼의 값:", form);
+    setMessage({ text: "테스트 성공 메시지입니다.", type: "success" });
   }
 
   function handleEdit() {}
