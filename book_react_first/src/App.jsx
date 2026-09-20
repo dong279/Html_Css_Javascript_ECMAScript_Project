@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { fetchBooks, createBook, updateBook } from "./api/bookApi.js";
+import {
+  fetchBooks,
+  fetchBook,
+  createBook,
+  updateBook,
+  deleteBook,
+} from "./api/bookApi.js";
 import { validateBook } from "./lib/validation.js";
-import { EMPTY_FORM, toRequest } from "./lib/bookData.js";
+import { EMPTY_FORM, toRequest, toFormValues } from "./lib/bookData.js";
 
 import BookForm from "./components/BookForm.jsx";
 import BookTable from "./components/BookTable.jsx";
@@ -22,6 +28,8 @@ function App() {
 
   const isEditing = editingId !== null;
 
+  const formRef = useRef(null);
+
   async function loadBooks() {
     setLoading(true);
     setListError(null);
@@ -34,7 +42,6 @@ function App() {
       setMessage({ text: error.message, type: "error" });
       setListError("오류: 데이터를 불러올 수 없습니다.");
     } finally {
-      // 성공하든 실패하든 로딩 표시는 반드시 끈다.
       setLoading(false);
     }
   }
@@ -69,12 +76,11 @@ function App() {
   }
 
   async function handleSubmit(event) {
-    event.preventDefault(); // React 에서도 필요하다
+    event.preventDefault();
     setMessage(null);
 
     const bookData = toRequest(form);
 
-    // 문제가 있으면 문구를, 없으면 null 을 돌려준다.
     const errorMessage = validateBook(bookData);
     if (errorMessage) {
       setMessage({ text: errorMessage, type: "error" });
@@ -104,8 +110,46 @@ function App() {
     }
   }
 
-  function handleEdit() {}
-  function handleDelete() {}
+  async function handleEdit(bookId) {
+    setMessage(null);
+
+    try {
+      const book = await fetchBook(bookId);
+
+      setForm(toFormValues(book));
+      setEditingId(bookId);
+
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ text: error.message, type: "error" });
+    }
+  }
+
+  // book_ecma 의 removeBook
+  async function handleDelete(bookId) {
+    if (!confirm("정말로 이 도서를 삭제하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      await deleteBook(bookId);
+      setMessage({
+        text: "도서가 성공적으로 삭제되었습니다.",
+        type: "success",
+      });
+
+      if (editingId === bookId) {
+        resetForm();
+      }
+
+      await loadBooks();
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ text: error.message, type: "error" });
+    }
+  }
+
   function handleDetail() {}
 
   return (
@@ -118,6 +162,7 @@ function App() {
         onChange={handleChange}
         onSubmit={handleSubmit}
         onCancel={resetForm}
+        containerRef={formRef}
       />
 
       <BookTable
