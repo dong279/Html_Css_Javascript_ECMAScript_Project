@@ -12,6 +12,7 @@ import { EMPTY_FORM, toRequest, toFormValues } from "./lib/bookData.js";
 
 import BookForm from "./components/BookForm.jsx";
 import BookTable from "./components/BookTable.jsx";
+import BookDetail from "./components/BookDetail.jsx";
 
 import "./style.css";
 
@@ -25,9 +26,7 @@ function App() {
   const [listError, setListError] = useState(null); // 표 자리에 낼 오류 문구
   const [message, setMessage] = useState(null); // { text, type } 또는 null
   const [detailBook, setDetailBook] = useState(null); // 상세 보기로 고른 도서
-
   const isEditing = editingId !== null;
-
   const formRef = useRef(null);
 
   async function loadBooks() {
@@ -49,7 +48,6 @@ function App() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 처음 한 번 목록을 불러오는 것은 의도된 동작입니다
     loadBooks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -103,10 +101,10 @@ function App() {
       }
 
       resetForm();
-      await loadBooks(); // 목록 새로고침
+      await loadBooks();
     } catch (error) {
       console.error("Error:", error);
-      setMessage({ text: error.message, type: "error" }); // 서버가 보낸 문구
+      setMessage({ text: error.message, type: "error" });
     }
   }
 
@@ -126,7 +124,6 @@ function App() {
     }
   }
 
-  // book_ecma 의 removeBook
   async function handleDelete(bookId) {
     if (!confirm("정말로 이 도서를 삭제하시겠습니까?")) {
       return;
@@ -143,6 +140,10 @@ function App() {
         resetForm();
       }
 
+      if (detailBook?.id === bookId) {
+        setDetailBook(null);
+      }
+
       await loadBooks();
     } catch (error) {
       console.error("Error:", error);
@@ -150,7 +151,17 @@ function App() {
     }
   }
 
-  function handleDetail() {}
+  async function handleDetail(bookId) {
+    setMessage(null);
+
+    try {
+      const book = await fetchBook(bookId);
+      setDetailBook(book); // 값이 있으면 BookDetail 이 보인다
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage({ text: error.message, type: "error" });
+    }
+  }
 
   return (
     <>
@@ -173,6 +184,8 @@ function App() {
         onDelete={handleDelete}
         onDetail={handleDetail}
       />
+
+      <BookDetail book={detailBook} onClose={() => setDetailBook(null)} />
     </>
   );
 }
