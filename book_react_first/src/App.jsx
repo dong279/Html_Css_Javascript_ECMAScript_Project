@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-
 import {
   fetchBooks,
   fetchBook,
@@ -7,13 +6,13 @@ import {
   updateBook,
   deleteBook,
 } from "./api/bookApi.js";
+
 import { validateBook } from "./lib/validation.js";
 import { EMPTY_FORM, toRequest, toFormValues } from "./lib/bookData.js";
-
+import { APP_MODE } from "./config.js";
 import BookForm from "./components/BookForm.jsx";
 import BookTable from "./components/BookTable.jsx";
 import BookDetail from "./components/BookDetail.jsx";
-
 import "./style.css";
 
 const MESSAGE_TIMEOUT = 3000;
@@ -26,7 +25,9 @@ function App() {
   const [listError, setListError] = useState(null); // 표 자리에 낼 오류 문구
   const [message, setMessage] = useState(null); // { text, type } 또는 null
   const [detailBook, setDetailBook] = useState(null); // 상세 보기로 고른 도서
+
   const isEditing = editingId !== null;
+
   const formRef = useRef(null);
 
   async function loadBooks() {
@@ -54,6 +55,7 @@ function App() {
     if (!message) {
       return;
     }
+
     if (message.type !== "success") {
       return;
     }
@@ -156,16 +158,24 @@ function App() {
 
     try {
       const book = await fetchBook(bookId);
-      setDetailBook(book); // 값이 있으면 BookDetail 이 보인다
+      setDetailBook(book);
     } catch (error) {
       console.error("Error:", error);
       setMessage({ text: error.message, type: "error" });
     }
   }
 
+  let modeClass = "app-mode test";
+  if (APP_MODE === "PROD") {
+    modeClass = "app-mode prod";
+  }
+
   return (
     <>
-      <h1>도서 관리 시스템</h1>
+      <h1>
+        도서 관리 시스템 <span className={modeClass}>{APP_MODE}</span>
+      </h1>
+
       <BookForm
         form={form}
         isEditing={isEditing}
