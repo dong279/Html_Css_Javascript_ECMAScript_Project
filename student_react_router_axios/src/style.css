@@ -1,11 +1,3 @@
-/* ===========================================================
-   학생 관리 시스템 스타일
-   -----------------------------------------------------------
-   student/css/form10.css 를 그대로 옮겨 온 것입니다.
-   Vite 프로젝트에서는 <link> 태그 대신 src/main.js 에서
-   import './style.css' 로 불러옵니다.
-   =========================================================== */
-
 /* body 태그에 전체 페이지의 기본 스타일을 설정합니다 */
 body {
   font-family: Arial, sans-serif;
@@ -24,6 +16,28 @@ h1 {
   /* 제목 색상을 진한 회색으로 설정 */
   text-align: center;
   /* 제목을 중앙 정렬 */
+}
+
+/* 제목 옆에 붙는 모드 표시(TEST / PROD) */
+.app-mode {
+  font-size: 0.5em;
+  /* 제목보다 훨씬 작게 — em 은 부모 글자 크기의 배수다 */
+  vertical-align: middle;
+  /* 제목 글자의 가운데 높이에 맞춘다 */
+  padding: 3px 10px;
+  border-radius: 12px;
+  color: white;
+  letter-spacing: 1px;
+}
+
+/* 개발 모드 — 눈에 띄지 않는 회색 */
+.app-mode.test {
+  background-color: #6c757d;
+}
+
+/* 운영 모드 — 실수로 운영을 건드리지 않도록 빨간색 */
+.app-mode.prod {
+  background-color: #dc3545;
 }
 
 /* 부제목(h2)의 스타일을 설정합니다 */
@@ -92,6 +106,20 @@ button {
 button:hover {
   background-color: #0056b3;
   /* 마우스 오버 시 배경색을 더 진한 파란색으로 변경 */
+}
+
+/* 버튼 그룹 컨테이너 스타일 */
+.button-group {
+  margin-top: 15px;
+  /* 위쪽 여백 */
+  display: flex;
+  /* 플렉스 레이아웃 사용 */
+  align-items: center;
+  /* 수직 중앙 정렬 */
+  flex-wrap: wrap;
+  /* 화면이 작을 때 줄바꿈 허용 */
+  gap: 10px;
+  /* 요소들 간의 간격 */
 }
 
 /* 테이블(table) 요소의 스타일을 설정합니다 */
@@ -194,10 +222,8 @@ tr:hover {
   overflow: hidden;
   /* 컨테이너 내용이 경계를 넘어갈 때 숨김 */
   padding: 20px;
-  /* 컨테이너 안쪽에 20픽셀의 여백 추가 (form-container 와 동일) */
 }
 
-/* step10 단계 부터 추가됨 */
 /* 로딩 상태 표시 스타일 */
 .loading {
   text-align: center;
@@ -216,11 +242,8 @@ tr:hover {
   /* 상대적으로 작은 폰트 크기 */
   margin-top: 5px;
   /* 위쪽 여백 */
-
-  /* 4부에는 여기에 display: none 이 있었다.
-       span 이 index.html 에 늘 있었고 showError() 가 block 으로 바꿔 주었기 때문이다.
-       React 에서는 MessageBox 가 보여 줄 것이 없으면 아예 그리지 않는다.
-       그리기로 한 것을 CSS 가 다시 가리면 안 되므로 그 줄을 뺀다. */
+  /* display: none; */
+  /* 기본적으로 숨김 */
 }
 
 /* 취소 버튼 스타일 */
@@ -262,13 +285,6 @@ tr:hover {
   /* 흰색 텍스트 */
 }
 
-/* 6부에서 편집은 <button> 이 아니라 /edit/:id 로 가는 <a>(Link) 다.
-   글자 밑줄을 없애고 inline-block 으로 바꿔 버튼과 같아 보이게 한다. */
-a.edit-btn {
-  display: inline-block;
-  text-decoration: none;
-}
-
 /* 편집 버튼 호버 효과 */
 .edit-btn:hover {
   background-color: #218838;
@@ -287,21 +303,6 @@ a.edit-btn {
 .delete-btn:hover {
   background-color: #c82333;
   /* hover 할때 더 어두운 빨간색 */
-}
-
-/* 버튼 그룹 컨테이너 스타일 */
-.button-group {
-  margin-top: 15px;
-  /* 위쪽 여백 */
-  display: flex;
-  /* 플렉스 레이아웃 사용 */
-  align-items: center;
-  /* 수직 중앙 정렬 */
-  /* 수직 중앙 정렬 */
-  flex-wrap: wrap;
-  /* 화면이 작을 때 줄바꿈 허용 */
-  gap: 10px;
-  /* 요소들 간의 간격 */
 }
 
 /* ---- ECMAScript 버전에서 추가된 스타일 ---- */
@@ -330,28 +331,6 @@ a.edit-btn {
 .form-container.editing {
   border-left: 4px solid #28a745;
   /* 왼쪽에 녹색 띠 */
-}
-
-/* 제목 옆에 붙는 모드 표시(TEST / PROD) */
-.app-mode {
-  font-size: 0.5em;
-  /* 제목보다 훨씬 작게 — em 은 부모 글자 크기의 배수다 */
-  vertical-align: middle;
-  /* 제목 글자의 가운데 높이에 맞춘다 */
-  padding: 3px 10px;
-  border-radius: 12px;
-  color: white;
-  letter-spacing: 1px;
-}
-
-/* 개발 모드 — 눈에 띄지 않는 회색 */
-.app-mode.test {
-  background-color: #6c757d;
-}
-
-/* 운영 모드 — 실수로 운영을 건드리지 않도록 빨간색 */
-.app-mode.prod {
-  background-color: #dc3545;
 }
 
 /* ===========================================================
@@ -468,6 +447,28 @@ a.edit-btn {
   text-decoration: underline;
 }
 
+/* 제목과 모드 배지를 한 덩어리로 묶는다.
+   머리말이 space-between 이라 자식이 둘이어야 배치가 유지된다. */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 머리말 안에서는 부모 글자가 작아 0.5em 이 너무 작다. 크기만 따로 준다. */
+.app-brand .app-mode {
+  font-size: 0.8rem;
+}
+
+/* Zustand 적용 이후에 더한 것 — 화면 위쪽(AppMessage)의 메시지 자리 */
+.app-message {
+  max-width: 1200px;
+  margin: 0 auto 16px;
+  /* 아래 여백 16px — 이것이 없으면 메시지가 목록 제목에 딱 붙는다 */
+  padding: 0 20px;
+  min-height: 24px;
+  /* 메시지가 없을 때도 자리를 비워 두어 화면이 덜컥이지 않게 한다 */
+}
 /* 제목과 모드 배지를 한 덩어리로 묶는다.
    머리말이 space-between 이라 자식이 둘이어야 배치가 유지된다. */
 .app-brand {
