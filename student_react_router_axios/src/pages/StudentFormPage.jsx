@@ -27,7 +27,7 @@ function StudentFormPage() {
 
   // 입력 중인 값은 이 화면만의 것이다.
   const [form, setForm] = useState(EMPTY_FORM);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);    
 
   // 서버에 보내는 일과 메시지는 store 가 맡는다.
   const saveStudent = useStudentStore((s) => s.saveStudent);

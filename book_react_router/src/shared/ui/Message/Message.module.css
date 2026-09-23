@@ -1,0 +1,19 @@
+.message {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.success {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+
+.error {
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger-hover);
+}
